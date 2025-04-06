@@ -2,7 +2,7 @@ from model.xiuxian_effect import *
 from model.xiuxian_user import *
 from model.xiuxian_events import *
 import random 
-from random_all import *
+from service.random_all import *
 
 #获取用户(带创建)
 def get_user_is_urll(qq,name):
@@ -12,20 +12,27 @@ def get_user_is_urll(qq,name):
         if name == None:
             name = generate_random_name 
         # 随机灵根
-        ling_geng = get_random_ling_geng
+        ling_geng = get_random_ling_geng()
         # 随机体质
-        body =  get_random_body
+        body =  get_random_body()
         # 随机种族
-        race = get_random_race
+        race = get_random_race()
         # 随机地区
-        region = get_random_region
-        add_user({
-        'user_id': qq,
-        'user_qq': qq,
-        'user_name': name,
-        })
-
-        user = get_user(user_id=qq)
+        region = get_random_region()
+        effectlist: List[int] = []
+        effectlist+=[ling_geng.effect_id,body.effect_id,race.effect_id,region.effect_id]
+        print("内容123456=======>",effectlist)
+        user:XiuxianUser = XiuxianUser(
+            user_id=qq,
+            user_qq=qq,
+            user_name=name,
+            user_race_id=race.race_id,
+            user_ling_gen_id=ling_geng.ling_gen_id,
+            user_region_id=region.region_id,
+            user_body_id=body.body_id,
+        )
+        print("内容======>",user.user_hp)
+        add_user(user)
     return user
  
 def effect (user:XiuxianUser,effect:List[XiuxianEffect]):

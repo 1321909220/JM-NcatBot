@@ -5,6 +5,8 @@ from sqlalchemy.orm  import declarative_base
 from sqlalchemy.exc  import SQLAlchemyError 
 from mysql_config import get_session, engine 
 import logging 
+from dataclasses import dataclass
+from sqlalchemy import Column, Integer, String, Numeric, Table 
 # 配置日志 
 logging.basicConfig() 
 logger = logging.getLogger(__name__) 
@@ -12,14 +14,30 @@ logger.setLevel(logging.INFO)
  
 Base = declarative_base()
 #  用户表
+@dataclass
 class XiuxianUser(Base):
     __table__ = Table(
         'xiuxian_user', 
-        Base.metadata,   
+        Base.metadata,
         autoload_with=engine,
         autoload_replace=False,
         extend_existing=True  # 新增：允许表定义扩展 
-    )
+    )  
+    user_hp: int = 100                    # 生命值（HP）  
+    user_energy: int = 100                # 法力值（MP）  
+    user_life: int = 80                   # 寿命值（剩余寿元）  
+    user_mental: int = 100                # 念力值（神识强度）  
+    user_speed: int = 100                 # 速度值（行动优先级）
+    user_justice: int = 0                 # 正义值（正邪倾向）
+    user_exp: int = 0                     # 修为值（境界经验）  
+    user_breakthrough: int = 1            # 突破几率（百分比）
+    user_attack: int = 10                 # 基础攻击力  
+    user_critical_attack: int = 5         # 暴击率（单位：‰，实际值需/1000）  
+    user_critical_magnification: int = 2  # 暴击倍率（200%）  
+    user_penetration_attack: int = 5      # 穿透率（无视防御概率，单位：‰）  
+    user_penetration_magnification: int =1# 穿透伤害比例（100%）  
+    user_defense: int = 1                 # 防御值（减伤系数） 
+    user_san: int = 100                   # 道心值（SAN值，防止入魔）  
     
     # 新增：方便调试的repr 
     def __repr__(self):
@@ -64,28 +82,19 @@ def get_users_by_ids(user_ids: List[int]) -> List[XiuxianUser]:
         logger.error(f" 批量获取用户失败: {e}")
         return []
  
-# 添加用户 (支持批量)
-def add_user(user_data: Union[Dict[str, Any], List[Dict[str, Any]]]) -> Union[XiuxianUser, List[XiuxianUser]]:
-    try:
-        with get_session() as session:
-            if isinstance(user_data, dict):
-                user = XiuxianUser(**user_data)
-                session.add(user) 
-            else:
-                users = [XiuxianUser(**data) for data in user_data]
-                session.add_all(users) 
-            
-            session.commit() 
-            
-            if isinstance(user_data, dict):
-                session.refresh(user) 
-                return user 
-            else:
-                # 批量添加时不逐个refresh，性能考虑 
-                return users 
-    except SQLAlchemyError as e:
-        logger.error(f" 添加用户失败: {e}")
-        raise  # 根据业务需求决定是否重新抛出 
+def add_user(user_data: Union[XiuxianUser, List[XiuxianUser]]):
+    with get_session() as session:
+        # 修改类型判断逻辑 
+        if isinstance(user_data, XiuxianUser):  # 直接处理对象 
+            session.add(user_data) 
+        elif isinstance(user_data, list):
+            session.add_all(user_data) 
+        else:
+            raise TypeError("仅支持XiuxianUser对象或对象列表")
+ 
+        session.commit() 
+        session.refresh(user_data)  if isinstance(user_data, XiuxianUser) else None 
+        return user_data 
  
 # 更新用户 (支持直接SQL更新)
 def update_user(

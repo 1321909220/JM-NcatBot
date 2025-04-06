@@ -5,8 +5,11 @@ from model.xiuxian_user_item import *
 
 from model.xiuxian_item import *
 from model.xiuxian_ling_gen import get_ling_gen_all,XiuxianLingGen
+# from service.random_all import 
+from service.xiaoguo import get_user_is_urll
 
-ling_gen:List[XiuxianLingGen] = get_ling_gen_all()
+get_user_is_urll(213,"芜12345")
+# ling_gen:List[XiuxianLingGen] = get_ling_gen_all()
 # for lg in ling_gen:
 #     print(lg)
 # user = get_user(user_qq="1321909220")

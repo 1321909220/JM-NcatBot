@@ -60,7 +60,7 @@ data_dicts = {
     'race': {race.race_id:  race for race in get_race_all()}, 
     'realm': {realm.realm_id:  realm for realm in get_realm_all()}, 
     'effect': {effect.effect_id:  effect for effect in get_effect_all()}, 
-    'events': {event.event_id:  event for event in get_events_all()} 
+    'events': {event.events_id:  event for event in get_events_all()} 
 } 
  
 def refresh_data(): 
@@ -114,6 +114,17 @@ def get_data_by_id(data_type: str, id):
         if data_dict: 
             return data_dict.get(id)  
     return None 
+
+# 根据ids获取列表
+def get_data_by_ids(data_type, ids): 
+    data_dict = data_dicts.get(data_type)  
+    result = [] 
+    if data_dict: 
+        for id in ids: 
+            value = data_dict.get(id)  
+            if value is not None: 
+                result.append(value)  
+    return result 
 
 
 # 获取随机灵根 
@@ -188,10 +199,12 @@ def get_random_effect():
 #获取随机某品质效果
 def get_random_effect_rarity(rarity):
     return get_random_data_rarity('effect', rarity)
-# 获取效果
+#获取效果
 def get_effect_by_id(id):
     return get_data_by_id('effect', id)
-
+#ids效果列表
+def get_effect_by_ids(ids):
+    return get_data_by_ids('effect', ids)
 
 #获取随机事件
 def get_random_events():
