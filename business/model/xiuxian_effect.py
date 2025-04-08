@@ -43,7 +43,7 @@ def get_effect_by_id(
             return session.scalars(stmt.limit(1)).first() 
             
     except SQLAlchemyError as e:
-        logger.error(f" 查询道具失败: 条件(user_id={effect_id} 错误: {e}")
+        logger.error(f" 查询效果失败: 条件(user_id={effect_id} 错误: {e}")
         return None
 
    # 获取所效果

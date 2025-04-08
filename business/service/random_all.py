@@ -215,3 +215,8 @@ def get_random_events_rarity(rarity):
 # 获取事件
 def get_event_by_id(id):
     return get_data_by_id('events', id)
+
+# 是否包含
+def is_strict_match(search_list, target):
+    """字符串是否在列表内严格精确匹配函数"""
+    return target in set(search_list)

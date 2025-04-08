@@ -8,7 +8,8 @@ from model.xiuxian_ling_gen import get_ling_gen_all,XiuxianLingGen
 # from service.random_all import 
 from service.xiaoguo import get_user_is_urll
 
-get_user_is_urll(213,"芜12345")
+
+get_user_is_urll(qq=18)
 # ling_gen:List[XiuxianLingGen] = get_ling_gen_all()
 # for lg in ling_gen:
 #     print(lg)

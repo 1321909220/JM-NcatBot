@@ -32,8 +32,6 @@ class XiuxianUserEquipment(Base):
 # 获取用户装备列表
 def get_user_equipment(user_id: Optional[int] = None
 ) -> Optional[XiuxianUserEquipment]:
-    if not any(user_id):
-        raise ValueError("至少需要提供一个查询条件（user_id或user_qq）")
     try:
         with get_session() as session:
             # 构建查询条件 
